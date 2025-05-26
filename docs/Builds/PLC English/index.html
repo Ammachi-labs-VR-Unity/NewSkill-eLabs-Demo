@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="en-us">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+  <title>NCERT</title>
+
+  <!-- Orientation Lock Script -->
+  <script>
+    function initOrientationLock() {
+      const isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+      if (!isMobile) return;
+
+      async function lockLandscape() {
+        try {
+          if (screen.orientation && screen.orientation.lock) {
+            await screen.orientation.lock('landscape');
+          }
+        } catch (error) {
+          console.warn('Orientation lock failed:', error);
+        }
+      }
+
+      lockLandscape();
+
+      window.addEventListener('orientationchange', lockLandscape);
+      document.addEventListener('visibilitychange', () => {
+        if (!document.hidden) lockLandscape();
+      });
+    }
+
+    initOrientationLock();
+  </script>
+
+  <link rel="shortcut icon" href="TemplateData/favicon.ico">
+  <link rel="stylesheet" href="TemplateData/style.css">
+</head>
+<body>
+  <div id="portrait-warning" class="portrait-warning">
+    <div class="warning-content">
+      <div class="warning-text">
+        This simulation is designed for landscape mode.<br>
+        Please rotate your device for the best experience.
+      </div>
+    </div>
+  </div>
+
+  <div id="fullscreen-note-container">
+    <div id="fullscreen-note">Double-click the screen for full-screen mode</div>
+  </div>
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas" width="1280" height="720" tabindex="-1"></canvas>
+    <div id="unity-loading-bar">
+      <div id="unity-logo"></div>
+      <div id="unity-progress-bar-empty">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+    </div>
+    <div id="unity-warning"></div>
+  </div>
+  <script>
+    var container = document.querySelector("#unity-container");
+    var canvas = document.querySelector("#unity-canvas");
+    var loadingBar = document.querySelector("#unity-loading-bar");
+    var progressBarFull = document.querySelector("#unity-progress-bar-full");
+    var fullscreenNote = document.querySelector("#fullscreen-note");
+    var portraitWarning = document.querySelector("#portrait-warning");
+    var isMobile = /iPhone|iPad|iPod|Android/i.test(navigator.userAgent);
+    var isIOS = /iPhone|iPad|iPod/i.test(navigator.userAgent);
+    var noteTimeout;
+    var hasShownInitialNote = false;
+    var unityInstance = null;
+
+    // Hide fullscreen note container completely for iOS devices
+    if (isIOS) {
+      document.getElementById('fullscreen-note-container').style.display = 'none';
+    }
+
+    function resizeCanvas() {
+      let displayWidth = container.clientWidth;
+      let displayHeight = container.clientHeight;
+      const targetRatio = 1280 / 720;
+      let width, height;
+
+      if (displayWidth / displayHeight > targetRatio) {
+        height = displayHeight;
+        width = height * targetRatio;
+      } else {
+        width = displayWidth;
+        height = width / targetRatio;
+      }
+
+      canvas.style.width = width + 'px';
+      canvas.style.height = height + 'px';
+    }
+
+    function hideNote() {
+      fullscreenNote.style.opacity = '0';
+    }
+
+    function showNote() {
+      if (!isIOS) {  // Only show note if not on iOS
+        fullscreenNote.style.opacity = '1';
+        if (noteTimeout) clearTimeout(noteTimeout);
+        noteTimeout = setTimeout(hideNote, 5000);
+      }
+    }
+
+    if (isMobile && !isIOS) {  // Only change text for mobile devices that aren't iOS
+      fullscreenNote.textContent = "Double-tap the screen for full-screen mode";
+    }
+
+    // Only add double-click listener if not on iOS
+    if (!isIOS) {
+      canvas.addEventListener('dblclick', function() {
+        if (unityInstance) {
+          unityInstance.SetFullscreen(1);
+        }
+      });
+    }
+
+    // Only add touch events for mobile devices that aren't iOS
+    if (isMobile && !isIOS) {
+      let lastTap = 0;
+      canvas.addEventListener('touchend', function(e) {
+        const currentTime = new Date().getTime();
+        const tapLength = currentTime - lastTap;
+        if (tapLength < 500 && tapLength > 0) {
+          if (unityInstance) {
+            unityInstance.SetFullscreen(1);
+          }
+          e.preventDefault();
+        }
+        lastTap = currentTime;
+      });
+    }
+
+    document.addEventListener('fullscreenchange', function() {
+      if (!isIOS) {  // Only handle fullscreen changes if not on iOS
+        if (document.fullscreenElement) {
+          hideNote();
+        } else {
+          showNote();
+        }
+      }
+    });
+
+    resizeCanvas();
+    window.addEventListener('resize', () => {
+      requestAnimationFrame(resizeCanvas);
+    });
+
+    loadingBar.style.display = "block";
+
+    var buildUrl = "Build";
+    var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/PLC Hindi.loader.js";
+      var config = {
+        dataUrl: buildUrl + "/PLC Hindi.data.unityweb",
+        frameworkUrl: buildUrl + "/PLC Hindi.framework.js.unityweb",
+        codeUrl: buildUrl + "/PLC Hindi.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "DefaultCompany",
+        productName: "PLC",
+        productVersion: "0.1.0",
+      showBanner: function(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+        setTimeout(() => { warningBanner.removeChild(div); }, 5000);
+      },
+    };
+
+    var script = document.createElement("script");
+    script.src = loaderUrl;
+    script.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        progressBarFull.style.width = 100 * progress + "%";
+      }).then((instance) => {
+	  	container.style.backgroundColor = "black";
+        unityInstance = instance;
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        loadingBar.style.display = "none";
+        if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
+          hasShownInitialNote = true;
+          showNote();
+        }
+        resizeCanvas();
+      }).catch((message) => {
+        alert(message);
+      });
+    };
+    document.body.appendChild(script);
+  </script>
+</body>
+</html>
