@@ -184,6 +184,10 @@
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
         unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
+		unityInstance.SendMessage('Info', 'SetAppName', 'soya');
+		unityInstance.SendMessage('Info', 'SetAppVersion', '1.2.0');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2024-12-13');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
