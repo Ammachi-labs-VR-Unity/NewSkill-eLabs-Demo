@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/lab  1st.loader.js";
+      var loaderUrl = buildUrl + "/Assistant Lab technician - food and agricultural commodities.loader.js";
       var config = {
-        dataUrl: buildUrl + "/lab  1st.data.unityweb",
-        frameworkUrl: buildUrl + "/lab  1st.framework.js.unityweb",
-        codeUrl: buildUrl + "/lab  1st.wasm.unityweb",
+        dataUrl: buildUrl + "/Assistant Lab technician - food and agricultural commodities.data.unityweb",
+        frameworkUrl: buildUrl + "/Assistant Lab technician - food and agricultural commodities.framework.js.unityweb",
+        codeUrl: buildUrl + "/Assistant Lab technician - food and agricultural commodities.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Assistant-Lab-Technician---Food-and-Agricultural-Commodities",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
