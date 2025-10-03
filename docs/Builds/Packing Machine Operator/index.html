@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Packaging Machine Operator V2.loader.js";
+      var loaderUrl = buildUrl + "/Packaging Machine Operator V4.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Packaging Machine Operator V2.data.unityweb",
-        frameworkUrl: buildUrl + "/Packaging Machine Operator V2.framework.js.unityweb",
-        codeUrl: buildUrl + "/Packaging Machine Operator V2.wasm.unityweb",
+        dataUrl: buildUrl + "/Packaging Machine Operator V4.data.unityweb",
+        frameworkUrl: buildUrl + "/Packaging Machine Operator V4.framework.js.unityweb",
+        codeUrl: buildUrl + "/Packaging Machine Operator V4.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Packing-Machine-Operator-Food-Industry",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml',0);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
