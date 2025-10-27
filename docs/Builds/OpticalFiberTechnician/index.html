@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/OpticalFiberTechnicianV3.loader.js";
+      var loaderUrl = buildUrl + "/v4.loader.js";
       var config = {
-        dataUrl: buildUrl + "/OpticalFiberTechnicianV3.data.unityweb",
-        frameworkUrl: buildUrl + "/OpticalFiberTechnicianV3.framework.js.unityweb",
-        codeUrl: buildUrl + "/OpticalFiberTechnicianV3.wasm.unityweb",
+        dataUrl: buildUrl + "/v4.data.unityweb",
+        frameworkUrl: buildUrl + "/v4.framework.js.unityweb",
+        codeUrl: buildUrl + "/v4.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Optical-Fiber-Technician",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
