@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/OpticalFiberTechnicianV6.loader.js";
+      var loaderUrl = buildUrl + "/OpticalFiberTechnicianV7.loader.js";
       var config = {
-        dataUrl: buildUrl + "/OpticalFiberTechnicianV6.data.unityweb",
-        frameworkUrl: buildUrl + "/OpticalFiberTechnicianV6.framework.js.unityweb",
-        codeUrl: buildUrl + "/OpticalFiberTechnicianV6.wasm.unityweb",
+        dataUrl: buildUrl + "/OpticalFiberTechnicianV7.data.unityweb",
+        frameworkUrl: buildUrl + "/OpticalFiberTechnicianV7.framework.js.unityweb",
+        codeUrl: buildUrl + "/OpticalFiberTechnicianV7.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Optical-Fiber-Technician",
@@ -184,10 +184,10 @@
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
         unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
-		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
+		unityInstance.SendMessage('Info', 'SetAppName', 'Optical Fiber Fault Analysis using OTDR');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
-		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
-		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2025-10-30');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'false');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
