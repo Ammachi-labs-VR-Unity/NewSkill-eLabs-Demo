@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/NewBuild.loader.js";
+      var loaderUrl = buildUrl + "/Programming and Operating Industrial Robots.loader.js";
       var config = {
-        dataUrl: buildUrl + "/NewBuild.data.unityweb",
-        frameworkUrl: buildUrl + "/NewBuild.framework.js.unityweb",
-        codeUrl: buildUrl + "/NewBuild.wasm.unityweb",
+        dataUrl: buildUrl + "/Programming and Operating Industrial Robots.data.unityweb",
+        frameworkUrl: buildUrl + "/Programming and Operating Industrial Robots.framework.js.unityweb",
+        codeUrl: buildUrl + "/Programming and Operating Industrial Robots.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Automotive Robotics and Automation Manager",
@@ -184,10 +184,10 @@
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
         unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
-		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
+		unityInstance.SendMessage('Info', 'SetAppName', 'Programming and Operating Industrial Robots');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
-		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
-		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2025-10-30');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'false');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
