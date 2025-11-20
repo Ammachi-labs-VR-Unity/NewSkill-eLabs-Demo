@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/AutomotiveCNCMachV4.loader.js";
+      var loaderUrl = buildUrl + "/AutomotiveCNCMachV6.loader.js";
       var config = {
-        dataUrl: buildUrl + "/AutomotiveCNCMachV4.data.unityweb",
-        frameworkUrl: buildUrl + "/AutomotiveCNCMachV4.framework.js.unityweb",
-        codeUrl: buildUrl + "/AutomotiveCNCMachV4.wasm.unityweb",
+        dataUrl: buildUrl + "/AutomotiveCNCMachV6.data.unityweb",
+        frameworkUrl: buildUrl + "/AutomotiveCNCMachV6.framework.js.unityweb",
+        codeUrl: buildUrl + "/AutomotiveCNCMachV6.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Automotive CNC Machining Technician",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
