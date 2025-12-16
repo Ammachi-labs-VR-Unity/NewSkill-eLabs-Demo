@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Industrial Baker.loader.js";
+      var loaderUrl = buildUrl + "/Industrial Baker new.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Industrial Baker.data.unityweb",
-        frameworkUrl: buildUrl + "/Industrial Baker.framework.js.unityweb",
-        codeUrl: buildUrl + "/Industrial Baker.wasm.unityweb",
+        dataUrl: buildUrl + "/Industrial Baker new.data.unityweb",
+        frameworkUrl: buildUrl + "/Industrial Baker new.framework.js.unityweb",
+        codeUrl: buildUrl + "/Industrial Baker new.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Industrial Baker",
@@ -183,11 +183,11 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
-		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+		unityInstance.SendMessage('Info', 'SetAppName', 'Industrial Baker');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
-		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
-		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2025-12-16');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'false');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
