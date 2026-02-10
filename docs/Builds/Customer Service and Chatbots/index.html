@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Customer Service and Chatbots V4.loader.js";
+      var loaderUrl = buildUrl + "/chatbot build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Customer Service and Chatbots V4.data.unityweb",
-        frameworkUrl: buildUrl + "/Customer Service and Chatbots V4.framework.js.unityweb",
-        codeUrl: buildUrl + "/Customer Service and Chatbots V4.wasm.unityweb",
+        dataUrl: buildUrl + "/chatbot build.data.unityweb",
+        frameworkUrl: buildUrl + "/chatbot build.framework.js.unityweb",
+        codeUrl: buildUrl + "/chatbot build.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Customer Service and Chatbots",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
