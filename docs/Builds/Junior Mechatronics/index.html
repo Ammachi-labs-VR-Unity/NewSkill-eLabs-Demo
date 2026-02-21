@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Junior Technician Mechatronics.loader.js";
+      var loaderUrl = buildUrl + "/Junior-Technician--Mechatronics V 1.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Junior Technician Mechatronics.data.unityweb",
-        frameworkUrl: buildUrl + "/Junior Technician Mechatronics.framework.js.unityweb",
-        codeUrl: buildUrl + "/Junior Technician Mechatronics.wasm.unityweb",
+        dataUrl: buildUrl + "/Junior-Technician--Mechatronics V 1.data.unityweb",
+        frameworkUrl: buildUrl + "/Junior-Technician--Mechatronics V 1.framework.js.unityweb",
+        codeUrl: buildUrl + "/Junior-Technician--Mechatronics V 1.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Junior  Technician- Mechatronics",
@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
 		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
 		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
