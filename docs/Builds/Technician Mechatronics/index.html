@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/Technician Mechatronics.loader.js";
+      var loaderUrl = buildUrl + "/Technician Mechatronics build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/Technician Mechatronics.data.unityweb",
-        frameworkUrl: buildUrl + "/Technician Mechatronics.framework.js.unityweb",
-        codeUrl: buildUrl + "/Technician Mechatronics.wasm.unityweb",
+        dataUrl: buildUrl + "/Technician Mechatronics build.data.unityweb",
+        frameworkUrl: buildUrl + "/Technician Mechatronics build.framework.js.unityweb",
+        codeUrl: buildUrl + "/Technician Mechatronics build.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Technician---Mechatronics",
@@ -184,10 +184,10 @@
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
         unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
-		unityInstance.SendMessage('Info', 'SetAppName', 'Technician Mechatronics');
+		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
-		unityInstance.SendMessage('Info', 'SetReleaseDate', '2025-12-31');
-		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'false');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
