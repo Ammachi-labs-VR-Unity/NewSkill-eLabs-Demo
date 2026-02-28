@@ -155,11 +155,11 @@
 
     var buildUrl = "Build";
     var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/PlaySchool.loader.js";
+      var loaderUrl = buildUrl + "/PlaySchool Build.loader.js";
       var config = {
-        dataUrl: buildUrl + "/PlaySchool.data.unityweb",
-        frameworkUrl: buildUrl + "/PlaySchool.framework.js.unityweb",
-        codeUrl: buildUrl + "/PlaySchool.wasm.unityweb",
+        dataUrl: buildUrl + "/PlaySchool Build.data.unityweb",
+        frameworkUrl: buildUrl + "/PlaySchool Build.framework.js.unityweb",
+        codeUrl: buildUrl + "/PlaySchool Build.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "DefaultCompany",
         productName: "Play-School-Facilitator-cum-Caregiver",
@@ -184,10 +184,10 @@
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
         unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
-		unityInstance.SendMessage('Info', 'SetAppName', 'Play-School-Facilitator');
+		unityInstance.SendMessage('Info', 'SetAppName', 'Amrita Vishwa Vidyapeetham');
 		unityInstance.SendMessage('Info', 'SetAppVersion', '1.0.0');
-		unityInstance.SendMessage('Info', 'SetReleaseDate', '2025-11-13');
-		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'false');
+		unityInstance.SendMessage('Info', 'SetReleaseDate', '2023-10-01');
+		unityInstance.SendMessage('Info', 'SetInfoPanelVisibilityFromString', 'true');
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
