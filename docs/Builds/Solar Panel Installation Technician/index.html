@@ -183,7 +183,7 @@
       }).then((instance) => {
 	  	container.style.backgroundColor = "black";
         unityInstance = instance;
-        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 1);
+        unityInstance.SendMessage('LanguageToggleButton', 'ToggleLanguageByHtml', 0);
         loadingBar.style.display = "none";
         if (!hasShownInitialNote && !isIOS) {  // Only show initial note if not on iOS
           hasShownInitialNote = true;
