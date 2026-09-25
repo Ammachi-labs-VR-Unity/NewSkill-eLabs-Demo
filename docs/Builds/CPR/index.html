@@ -1,0 +1,360 @@
+<!DOCTYPE html>
+<html lang="en-us">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity Web Player | CPR Third Person Simulation</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+  </head>
+  <body>
+    <div id="unity-container" class="unity-desktop">
+      <canvas id="unity-canvas" width=960 height=600 tabindex="-1"></canvas>
+      <div id="unity-loading-bar">
+        <div id="unity-logo"></div>
+        <div id="unity-progress-bar-empty">
+          <div id="unity-progress-bar-full"></div>
+        </div>
+      </div>
+      <div id="unity-warning"> </div>
+      <!--
+        CPR FULLSCREEN DISCOVERY.
+
+        Host chrome shown once the runtime is ready: an icon the learner can press, and one short
+        line saying what it is for. Neither is a dialog and neither asks for a decision - ignoring
+        the sentence dismisses it.
+
+        The sentence leaves after a few seconds. The icon stays for as long as the game is
+        windowed and is hidden the moment fullscreen begins, so it is never present during the
+        state real play happens in.
+
+        It does share this corner with Unity's UI - LookPad is anchored (0,0)-(1,1) across the
+        whole viewport, Progress and the timer sit top right, the Guided card top left, the
+        sidebar on the right edge, the joystick bottom left, and the tutorial, its full-screen
+        Continue button and the completion screen each cover everything. That overlap is accepted
+        here because pressing the icon by mistake enters fullscreen, which removes it: the
+        collision costs one tap and then cannot happen again. An icon that also stayed up DURING
+        fullscreen had no such ceiling, and that version was rejected.
+
+        The hint carries a small copy of the button's own glyph so the sentence points at the real
+        control rather than describing where it is.
+      -->
+      <button id="cpr-fs" type="button" aria-label="Enter full screen" title="Enter full screen" hidden>
+        <svg viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+          <path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/>
+        </svg>
+      </button>
+      <p id="cpr-hint" role="status" hidden>For the best experience, select <svg class="cpr-hint-glyph" viewBox="0 0 24 24" aria-hidden="true" focusable="false"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg> to enter full screen.</p>
+      <div id="unity-footer">
+        <div id="unity-logo-title-footer"></div>
+        <div id="unity-build-title">CPR Third Person Simulation</div>
+      </div>
+    </div>
+    <script>
+      var canvas = document.querySelector("#unity-canvas");
+
+      // Shows a temporary message banner/ribbon for a few seconds, or
+      // a permanent error message on top of the canvas if type=='error'.
+      // If type=='warning', a yellow highlight color is used.
+      // Modify or remove this function to customize the visually presented
+      // way that non-critical warnings and error messages are presented to the
+      // user.
+      function unityShowBanner(msg, type) {
+        var warningBanner = document.querySelector("#unity-warning");
+        function updateBannerVisibility() {
+          warningBanner.style.display = warningBanner.children.length ? 'block' : 'none';
+        }
+        var div = document.createElement('div');
+        div.innerHTML = msg;
+        warningBanner.appendChild(div);
+        if (type == 'error') div.style = 'background: red; padding: 10px;';
+        else {
+          if (type == 'warning') div.style = 'background: yellow; padding: 10px;';
+          setTimeout(function() {
+            warningBanner.removeChild(div);
+            updateBannerVisibility();
+          }, 5000);
+        }
+        updateBannerVisibility();
+      }
+
+      var buildUrl = "Build";
+      var loaderUrl = buildUrl + "/cpr web host.loader.js";
+      var config = {
+        arguments: [],
+        dataUrl: buildUrl + "/cpr web host.data.unityweb",
+        frameworkUrl: buildUrl + "/cpr web host.framework.js.unityweb",
+        codeUrl: buildUrl + "/cpr web host.wasm.unityweb",
+        streamingAssetsUrl: "StreamingAssets",
+        companyName: "AmmachiLabs",
+        productName: "CPR Third Person Simulation",
+        productVersion: "0.1.0",
+        showBanner: unityShowBanner,
+        // errorHandler: function(err, url, line) {
+        //    alert("error " + err + " occurred at line " + line);
+        //    // Return 'true' if you handled this error and don't want Unity
+        //    // to process it further, 'false' otherwise.
+        //    return true;
+        // },
+      };
+
+      // By default, Unity keeps WebGL canvas render target size matched with
+      // the DOM size of the canvas element (scaled by window.devicePixelRatio)
+      // Set this to false if you want to decouple this synchronization from
+      // happening inside the engine, and you would instead like to size up
+      // the canvas DOM size and WebGL render target sizes yourself.
+      // config.matchWebGLToCanvasSize = false;
+      //
+      // CPR: deliberately left at the default. Entering fullscreen changes only the canvas CSS
+      // size and lets Unity resize the render target to match, which is exactly this mechanism.
+      // Disabling it would make us responsible for that by hand.
+
+      // If you would like all file writes inside Unity Application.persistentDataPath
+      // directory to automatically persist so that the contents are remembered when
+      // the user revisits the site the next time, uncomment the following line:
+      // config.autoSyncPersistentDataPath = true;
+      // This autosyncing is currently not the default behavior to avoid regressing
+      // existing user projects that might rely on the earlier manual
+      // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
+      // expected to change.
+
+      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+        // Mobile device style: fill the whole browser client area with the game canvas:
+
+        var meta = document.createElement('meta');
+        meta.name = 'viewport';
+        meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        document.querySelector("#unity-container").className = "unity-mobile";
+        canvas.className = "unity-mobile";
+
+        // To lower canvas resolution on mobile devices to gain some
+        // performance, uncomment the following line:
+        // config.devicePixelRatio = 1;
+
+
+      } else {
+        // Desktop style: Render the game canvas in a window that can be maximized to fullscreen:
+        canvas.style.width = "960px";
+        canvas.style.height = "600px";
+      }
+
+      document.querySelector("#unity-loading-bar").style.display = "block";
+
+      var script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => {
+          document.querySelector("#unity-progress-bar-full").style.width = 100 * progress + "%";
+              }).then((unityInstance) => {
+                document.querySelector("#unity-loading-bar").style.display = "none";
+                // Runtime ready: the main menu is up and the learner can see it. Offer the
+                // fullscreen suggestion now, over a live menu rather than instead of one. Safe to
+                // do here, and that is measured rather than assumed - the build boots to the menu
+                // with gameplay Suspended, and the scenario timer only starts once the flow
+                // reaches Active through BeginScenario, three deliberate actions away.
+                if (window.cprShowFullscreenDiscovery) window.cprShowFullscreenDiscovery();
+
+              }).catch((message) => {
+                alert(message);
+              });
+            };
+
+      document.body.appendChild(script);
+
+      // ---- CPR fullscreen discovery -------------------------------------------------------------
+      //
+      // Fullscreens #unity-container rather than calling unityInstance.SetFullscreen(1), which
+      // fullscreens the canvas alone. Unity's render-target sizing is untouched: only the canvas
+      // CSS size changes, and matchWebGLToCanvasSize (default, above) resizes the framebuffer.
+      //
+      // TIMED, NOT INTERACTION-DRIVEN. An earlier revision dismissed both elements on the
+      // learner's first canvas press, which meant a perfectly ordinary click on Start took the
+      // suggestion away before it had been read. Host chrome should not be steered by gameplay
+      // input, so the sentence serves out a fixed life and the icon is driven only by the
+      // fullscreen state itself. Nothing here listens to Unity's input at all.
+      (function () {
+        // The sentence is temporary; the icon is not. It stays for as long as the game is
+        // windowed, so there is always a way in - after an accidental Esc, an Android back
+        // gesture, a tab switch, or simply a change of mind ten minutes later. Entering
+        // fullscreen hides it again, which is what keeps it affordable; the fullscreenchange
+        // handler explains why the overlap with Unity's own top-right UI is bounded.
+        var HINT_MS = 5500;
+        var FAIL_MS = 3500;
+        var FADE_MS = 400;
+
+        var container = document.querySelector("#unity-container");
+        var button = document.querySelector("#cpr-fs");
+        var hint = document.querySelector("#cpr-hint");
+        if (!container || !button || !hint) return;
+
+        // Feature detection is the authority. Where arbitrary element fullscreen does not exist -
+        // iPhone Safari being the case that matters - nothing is shown at all: no icon, no hint,
+        // no error. The game simply fills the viewport.
+        var supported = !!(document.fullscreenEnabled && container.requestFullscreen);
+
+        var hintTimer = null, failTimer = null;
+        var savedWidth = null, savedHeight = null;
+
+        // Desktop writes an explicit pixel size onto the canvas; mobile is already 100%/100% by
+        // CSS. Stretch it to the fullscreen element, and restore the authored size on the way out.
+        function sizeCanvas(on) {
+          var c = document.querySelector("#unity-canvas");
+          if (!c) return;
+          if (on) {
+            if (savedWidth === null) { savedWidth = c.style.width; savedHeight = c.style.height; }
+            c.style.width = "100%";
+            c.style.height = "100%";
+          } else if (savedWidth !== null) {
+            c.style.width = savedWidth;
+            c.style.height = savedHeight;
+            savedWidth = null; savedHeight = null;
+          }
+        }
+
+        function reveal(el) {
+          // Supersede any concealment still in flight, INCLUDING its backstop timer. Without
+          // this, toggling fullscreen faster than the fade (enter, then Esc within ~600ms)
+          // would let the previous hide land on top of this show and leave the icon invisible
+          // while the game is windowed - exactly the state it exists to cover.
+          el._cprGen = (el._cprGen || 0) + 1;
+          if (el._cprHide) { clearTimeout(el._cprHide); el._cprHide = null; }
+
+          // Hand hit-testing back before the element is shown, so it can never be visible and
+          // silently unclickable. Empty string rather than "auto": it clears the inline value
+          // and lets the stylesheet decide, which keeps the hint's own pointer-events: none.
+          el.style.pointerEvents = "";
+
+          // cpr-out has to go before cpr-in lands, or an element coming back from an earlier
+          // hide would carry both classes and settle on the wrong one.
+          el.classList.remove("cpr-out");
+          el.hidden = false;
+
+          // Commit the start state with a synchronous reflow, then transition away from it.
+          // The element has to be laid out in that state first or the browser coalesces both
+          // changes and nothing animates.
+          //
+          // This waited two animation frames until it was measured doing the wrong thing.
+          // requestAnimationFrame does NOT run while the page is not being rendered, and a
+          // background tab is exactly where an exit from fullscreen tends to land: the element
+          // came back un-hidden with cpr-in never applied, which is fully transparent but still
+          // hit-testable - an invisible 48x48 tap thief in the corner, the one failure this
+          // whole design exists to avoid. Reflow does not depend on the page being painted, so
+          // the end state is reached whether or not anything is on screen.
+          void el.offsetWidth;
+          el.classList.add("cpr-in");
+        }
+
+        // Fades out and then HIDES. [hidden] is display:none, so the element stops hit-testing
+        // altogether - it is NOT left at opacity 0, which would go on winning hit-tests over a
+        // canvas whose look surface covers the whole viewport. The nodes are kept rather than
+        // deleted because both come back: the icon on every exit from fullscreen, the pill as
+        // the notice for a refused request. The timeout is a backstop, since transitionend does
+        // not fire when reduced motion has turned the transition off.
+        function conceal(el) {
+          if (!el || el.hidden) return;
+          var gen = el._cprGen = (el._cprGen || 0) + 1;
+          if (el._cprHide) { clearTimeout(el._cprHide); el._cprHide = null; }
+
+          // Stop taking input NOW, not when the fade lands. hidden is only set once finish()
+          // runs - on transitionend, or on the backstop - and under prefers-reduced-motion the
+          // stylesheet sets transition: none, so opacity drops to 0 instantly while no
+          // transitionend ever fires. That left the button invisible and still hit-testable for
+          // the whole backstop period, over a canvas whose look surface covers the viewport.
+          // This is synchronous, so the forbidden state cannot be observed at any point.
+          el.style.pointerEvents = "none";
+          var gone = false;
+          function finish() {
+            if (gone) return;
+            // A reveal since this hide began wins: drop out without touching the element.
+            if (el._cprGen !== gen) { el.removeEventListener("transitionend", finish); return; }
+            gone = true;
+            el.removeEventListener("transitionend", finish);
+            el.classList.remove("cpr-in");
+            el.classList.remove("cpr-out");
+            el.hidden = true;
+            el._cprHide = null;
+          }
+          el.addEventListener("transitionend", finish);
+          el.classList.remove("cpr-in");
+          el.classList.add("cpr-out");
+          el._cprHide = setTimeout(finish, FADE_MS + 200);
+        }
+
+        function dismissHint() { clearTimeout(hintTimer); clearTimeout(failTimer); conceal(hint); }
+
+        function showFailure() {
+          // Reachable at any time now that the icon is permanent while windowed: a learner can
+          // ask for fullscreen long after the original sentence has gone, and a request the
+          // browser refuses has to say something rather than appear to do nothing at all.
+          // Reusing the pill for that is why it is hidden when its first life ends, not deleted.
+          clearTimeout(hintTimer); clearTimeout(failTimer);
+          hint.textContent = "Full screen couldn't be opened.";
+          reveal(hint);
+          failTimer = setTimeout(dismissHint, FAIL_MS);
+        }
+
+        // Called by the Unity bootstrap once createUnityInstance resolves.
+        window.cprShowFullscreenDiscovery = function () {
+          // Both start hidden in the markup, so an unsupported browser - iPhone Safari being
+          // the case that matters - simply never sees either of them.
+          if (!supported) return;
+
+          reveal(button);
+          reveal(hint);
+
+          hintTimer = setTimeout(dismissHint, HINT_MS);
+        };
+
+        button.addEventListener("click", function () {
+          // Called SYNCHRONOUSLY from the trusted click. Awaiting anything first would spend the
+          // user activation and the browser would refuse.
+          var request;
+          try {
+            request = container.requestFullscreen();
+          } catch (e) {
+            console.warn("[CPR] full screen request threw:", e);
+            showFailure();
+            return;
+          }
+          if (request && request.catch) {
+            request.catch(function (err) {
+              console.warn("[CPR] full screen request rejected:", err);
+              showFailure();
+            });
+          }
+        });
+
+        document.addEventListener("fullscreenchange", function () {
+          var on = document.fullscreenElement === container;
+          sizeCanvas(on);
+          if (on) {
+            // Fullscreen is where the sentence was steering them, so the host gets out of the
+            // way completely. This is the state real play happens in, and nothing of ours is
+            // in it - hidden here means display:none, so it cannot take a tap either.
+            clearTimeout(hintTimer);
+            clearTimeout(failTimer);
+            conceal(button);
+            conceal(hint);
+            return;
+          }
+
+          // Left fullscreen - Esc, Android Back, a tab switch, browser UI, or on purpose. The
+          // icon comes back, so while the game is windowed there is always a way in.
+          //
+          // It does overlap Unity's UI in this corner: Progress is pinned to the same corner at
+          // the same inset, SkipButton begins exactly where this button ends, and the debrief
+          // CloseButton sits under it as well. That is accepted rather than overlooked, because
+          // the cost has a ceiling - a mis-tap here enters fullscreen, which hides the icon, so
+          // the overlap resolves itself after one tap and cannot recur for that learner. An
+          // icon that stayed up DURING fullscreen would have no such ceiling, which is why the
+          // always-on version of this button was rejected.
+          if (supported) reveal(button);
+        });
+
+        document.addEventListener("fullscreenerror", function () { showFailure(); });
+      })();
+
+    </script>
+  </body>
+</html>

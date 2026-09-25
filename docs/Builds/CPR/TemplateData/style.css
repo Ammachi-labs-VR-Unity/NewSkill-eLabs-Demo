@@ -1,0 +1,177 @@
+body { padding: 0; margin: 0 }
+#unity-container { position: absolute }
+#unity-container.unity-desktop { left: 50%; top: 50%; transform: translate(-50%, -50%) }
+#unity-container.unity-mobile { position: fixed; width: 100%; height: 100% }
+#unity-canvas { background: #231F20 }
+.unity-mobile #unity-canvas { width: 100%; height: 100% }
+#unity-loading-bar { position: absolute; left: 50%; top: 50%; transform: translate(-50%, -50%); display: none; text-align: center }
+#unity-logo { width: 300px; height: 100px; max-width: 80vw; margin: 0 auto; background: url('logo.png') no-repeat center; background-size: contain }
+#unity-progress-bar-empty { width: 141px; height: 18px; margin-top: 15px; margin-left: auto; margin-right: auto; background: url('progress-bar-empty-dark.png') no-repeat center }
+#unity-progress-bar-full { width: 0%; height: 18px; margin-top: 10px; background: url('progress-bar-full-dark.png') no-repeat center }
+#unity-footer { position: relative }
+.unity-mobile #unity-footer { display: none }
+#unity-logo-title-footer { float:left; width: 102px; height: 38px; background: url('unity-logo-title-footer.png') no-repeat center }
+#unity-build-title { float: right; margin-right: 10px; line-height: 38px; font-family: arial; font-size: 18px }
+#unity-warning { position: absolute; left: 50%; top: 5%; transform: translate(-50%); background: white; padding: 10px; display: none }
+
+/* ============================================================================================
+   CPR host additions. Everything above is Unity 6000.3.16f1's Default template, minus the
+   #unity-fullscreen-button rule whose control has been replaced - see index.html.
+   ============================================================================================ */
+
+/* The host shell must not scroll or rubber-band. On a phone a stray page scroll drags the whole
+   game out from under the learner's thumb mid-compression, and the host has nothing to scroll to
+   in the first place. */
+html, body { height: 100%; overscroll-behavior: none }
+body { overflow: hidden }
+
+/* Mobile viewport height. 100% resolves against a viewport that changes as the address bar slides
+   away, leaving a strip of background at one edge. dvh tracks it; the 100vh line before it is the
+   fallback for browsers that do not know dvh, and is overridden where they do. */
+#unity-container.unity-mobile { height: 100vh; height: 100dvh }
+
+/* FULLSCREEN. The container is the fullscreen element (index.html explains why), so it drops the
+   desktop centring transform and fills the screen. The canvas is stretched from script rather than
+   here, because desktop writes an inline pixel size that CSS cannot outrank without !important. */
+#unity-container:fullscreen { position: fixed; left: 0; top: 0; width: 100%; height: 100%; transform: none }
+#unity-container:fullscreen #unity-footer { display: none }
+
+/* ---- Fullscreen discovery ------------------------------------------------------------------
+   Both elements are temporary and are removed from the DOM within seconds - see index.html. They
+   are browser chrome: quieter than anything Unity draws, and never present during real play. */
+
+#cpr-fs {
+  position: absolute;
+  z-index: 10;
+  top: max(12px, env(safe-area-inset-top, 0px));
+  right: max(12px, env(safe-area-inset-right, 0px));
+  width: 48px;
+  height: 48px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0;
+  margin: 0;
+  border: 1px solid rgba(255, 255, 255, 0.22);
+  border-radius: 10px;
+  background: rgba(0, 0, 0, 0.5);
+  color: #fff;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+/* [hidden] is a UA display:none, which the display:flex above would otherwise beat - so the
+   unsupported-browser case has to be said explicitly or a dead icon would show anyway. */
+#cpr-fs[hidden] { display: none }
+
+#cpr-fs:hover { background: rgba(0, 0, 0, 0.68); border-color: rgba(255, 255, 255, 0.4) }
+#cpr-fs:focus-visible { outline: 2px solid #fff; outline-offset: 2px }
+
+#cpr-fs svg {
+  width: 22px;
+  height: 22px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Vertical placement is width-dependent. The pill is centred and the button is pinned right, so
+   on a narrow screen the two genuinely overlap horizontally and the pill has to sit below the
+   button's row. Once the viewport is wide enough that they cannot meet - the centred pill needs
+   about 486px before its right edge clears the button - it rises onto the button's own line,
+   which reads as one tidy band across the top instead of a stray label floating below it. */
+#cpr-hint {
+  position: absolute;
+  z-index: 10;
+  top: calc(max(12px, env(safe-area-inset-top, 0px)) + 54px);
+  left: 50%;
+  margin: 0;
+
+  /* width: max-content is load-bearing. Without it an absolutely positioned box anchored at
+     left: 50% shrink-to-fits against only the space remaining to the container's right edge -
+     half the viewport - so on a 375px phone the sentence was squeezed into 188px and wrapped
+     onto three lines. Sizing to the content and then clamping keeps it to one line wherever
+     the viewport can hold one. */
+  width: max-content;
+  max-width: min(520px, calc(100vw - 24px));
+  box-sizing: border-box;
+  padding: 9px 16px;
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 8px;
+  background: rgba(0, 0, 0, 0.72);
+  color: #f0f0f0;
+  font-family: system-ui, -apple-system, "Segoe UI", Roboto, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.45;
+  text-align: center;
+  white-space: nowrap;
+
+  /* NOT a dialog and not a control: it never takes a tap. Anything the learner presses through
+     it belongs to Unity, which is why it needs no close button - ignoring it dismisses it. */
+  pointer-events: none;
+}
+
+#cpr-hint[hidden] { display: none }
+
+/* A small copy of the button's own glyph, so the sentence points at the real control instead of
+   describing where it is. Presentation only - it inherits the hint's pointer-events: none. */
+.cpr-hint-glyph {
+  width: 15px;
+  height: 15px;
+  vertical-align: -2px;
+  margin: 0 2px;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 2.2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+/* Wide enough that the centred pill cannot reach the button: share its top inset. */
+@media (min-width: 520px) {
+  #cpr-hint { top: max(12px, env(safe-area-inset-top, 0px)) }
+}
+
+/* Only wrap where the viewport genuinely cannot hold one line. */
+@media (max-width: 430px) {
+  #cpr-hint { white-space: normal; font-size: 13px }
+}
+
+/* ---- appear / disappear --------------------------------------------------------------------
+   Quiet browser chrome, not a flourish: a short fade with a few pixels of travel, on an ease-out
+   curve. Start and end states live here; the classes are driven from script so removal can wait
+   for the transition to finish. */
+#cpr-fs, #cpr-hint { opacity: 0 }
+#cpr-fs { transform: translateY(-6px) }
+#cpr-hint { transform: translate(-50%, -6px) }
+
+#cpr-fs.cpr-in { opacity: 1; transform: translateY(0) }
+#cpr-hint.cpr-in { opacity: 1; transform: translate(-50%, 0) }
+
+#cpr-fs.cpr-out { opacity: 0; transform: translateY(-4px) }
+#cpr-hint.cpr-out { opacity: 0; transform: translate(-50%, -4px) }
+
+@media (prefers-reduced-motion: no-preference) {
+  #cpr-fs, #cpr-hint {
+    transition: opacity 300ms cubic-bezier(0.22, 0.61, 0.36, 1),
+                transform 300ms cubic-bezier(0.22, 0.61, 0.36, 1);
+  }
+  #cpr-fs.cpr-out, #cpr-hint.cpr-out {
+    transition: opacity 400ms cubic-bezier(0.4, 0, 0.6, 1),
+                transform 400ms cubic-bezier(0.4, 0, 0.6, 1);
+  }
+  #cpr-fs { transition-property: opacity, transform, background-color, border-color }
+}
+
+/* No travel and no timed animation when less motion is asked for. The elements still appear and
+   still leave on the same schedule - script removes them either way, and it does not rely on a
+   transitionend that will never arrive here. */
+@media (prefers-reduced-motion: reduce) {
+  #cpr-fs, #cpr-hint { transition: none }
+  #cpr-fs, #cpr-fs.cpr-in, #cpr-fs.cpr-out { transform: none }
+  #cpr-hint, #cpr-hint.cpr-in, #cpr-hint.cpr-out { transform: translateX(-50%) }
+  #cpr-fs.cpr-in, #cpr-hint.cpr-in { opacity: 1 }
+  #cpr-fs.cpr-out, #cpr-hint.cpr-out { opacity: 0 }
+}
