@@ -5,6 +5,7 @@
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <title>Unity Web Player | CPR Third Person Simulation</title>
     <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="preload" as="image" href="TemplateData/logo.webp" type="image/webp">
     <link rel="stylesheet" href="TemplateData/style.css">
   </head>
   <body>
@@ -79,12 +80,12 @@
       }
 
       var buildUrl = "Build";
-      var loaderUrl = buildUrl + "/cpr web host.loader.js";
+      var loaderUrl = buildUrl + "/CPR.loader.js";
       var config = {
         arguments: [],
-        dataUrl: buildUrl + "/cpr web host.data.unityweb",
-        frameworkUrl: buildUrl + "/cpr web host.framework.js.unityweb",
-        codeUrl: buildUrl + "/cpr web host.wasm.unityweb",
+        dataUrl: buildUrl + "/CPR.data.unityweb",
+        frameworkUrl: buildUrl + "/CPR.framework.js.unityweb",
+        codeUrl: buildUrl + "/CPR.wasm.unityweb",
         streamingAssetsUrl: "StreamingAssets",
         companyName: "AmmachiLabs",
         productName: "CPR Third Person Simulation",
