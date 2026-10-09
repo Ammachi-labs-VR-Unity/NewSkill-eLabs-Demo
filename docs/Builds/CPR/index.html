@@ -119,8 +119,43 @@
       // JS_FileSystem_Sync() behavior, but in future Unity version, this will be
       // expected to change.
 
-      if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
-        // Mobile device style: fill the whole browser client area with the game canvas:
+      // ---- CPR input profile --------------------------------------------------------------------
+      //
+      // Is this a touch device? Decided ONCE, here, and published as window.cprInputProfile. This
+      // page needs the answer for its layout before Unity exists, and the game reads the same object
+      // (Plugins/WebGL/CprInputProfile.jslib -> CPR.Core.InputStyle) to word its instructions - one
+      // decision, so a device can never get the touch layout and keyboard wording, or the reverse.
+      //
+      // WHY NOT THE USER AGENT. Unity's own isMobilePlatform, and this template until now, asked
+      // the user-agent string, and tablets defeat that by design. iPadOS Safari requests the desktop
+      // site and calls itself a Mac; Chrome on most Android tablets does the same by default and
+      // drops "Android" and "Mobile". Both got the desktop layout and "Press E" - on a device with
+      // no keyboard. So the rule asks how the device is operated, not what it calls itself:
+      //
+      //   1. An iPad calling itself a Mac. navigator.platform is "MacIntel" on both, but no Mac has a
+      //      touch screen, so touch points give the iPad away. First, because an iPad with a
+      //      trackpad attached can report a fine pointer and is still a tablet in the learner's hands.
+      //   2. The primary pointer, measured: coarse is a finger. This is what gets Android tablets in
+      //      desktop-site mode right, and it keeps touchscreen LAPTOPS on the desktop side - their
+      //      primary pointer is the trackpad, and they have the keyboard the prompts name.
+      //   3. A browser too old to answer pointer queries: the user agent is all that is left.
+      window.cprInputProfile = (function () {
+        var nav = window.navigator;
+        function query(media) { return !!(window.matchMedia && window.matchMedia(media).matches); }
+
+        if (nav.platform === "MacIntel" && nav.maxTouchPoints > 1)
+          return { touch: true, basis: "ipad" };
+
+        if (query("(pointer: coarse)") || query("(pointer: fine)") || query("(pointer: none)"))
+          return { touch: query("(pointer: coarse)"), basis: "pointer" };
+
+        return { touch: /iPhone|iPad|iPod|Android|Mobile/i.test(nav.userAgent), basis: "user-agent" };
+      })();
+
+      if (window.cprInputProfile.touch) {
+        // Touch device style - phones AND tablets: fill the whole browser client area with the game
+        // canvas. A tablet on the fixed desktop canvas got a small letterboxed game on a page that
+        // pinch-zoomed and scrolled under the learner's fingers.
 
         var meta = document.createElement('meta');
         meta.name = 'viewport';
