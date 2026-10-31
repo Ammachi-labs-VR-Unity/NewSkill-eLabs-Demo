@@ -1,0 +1,11 @@
+{
+  "edition": "Guided",
+  "productName": "CPR Simulation – Guided",
+  "result": "Succeeded",
+  "compiledEditionCheck": "verified",
+  "commit": "48d1531883895f56c2580b4cdbe757a42cb7474e",
+  "workingTreeDirty": true,
+  "builtAtUtc": "2026-10-30T10:46:39Z",
+  "unityVersion": "6000.3.16f1",
+  "outputSizeBytes": 123307207
+}
